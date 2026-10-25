@@ -1,9 +1,12 @@
 -- Run this file in Supabase Dashboard > SQL Editor.
 create table if not exists public.wellness_data (
   user_id uuid primary key references auth.users(id) on delete cascade,
-  data jsonb not null default '{"habits":[],"goals":[],"journal":[]}'::jsonb,
+  data jsonb not null default '{"habits":[],"goals":[],"journal":[],"dailyPlan":[]}'::jsonb,
   updated_at timestamptz not null default now()
 );
+
+alter table public.wellness_data
+  alter column data set default '{"habits":[],"goals":[],"journal":[],"dailyPlan":[]}'::jsonb;
 
 alter table public.wellness_data enable row level security;
 

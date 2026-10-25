@@ -9,10 +9,26 @@ export type Habit = { id: string; name: string; log: string[] };
 export type Goal = { id: string; title: string; due?: string; progress: number };
 export type Mood = 1 | 2 | 3 | 4 | 5;
 export type Entry = { id: string; at: string; mood: Mood; text: string };
-export type UserData = { habits: Habit[]; goals: Goal[]; journal: Entry[] };
+export type ActivityKind = "MOVE" | "MEAL" | "REST" | "REMINDER";
+export type ScheduledActivity = {
+  id: string;
+  time: string;
+  title: string;
+  detail: string;
+  tag: ActivityKind;
+  completedOn: string | null;
+};
+export type UserData = { habits: Habit[]; goals: Goal[]; journal: Entry[]; dailyPlan: ScheduledActivity[] };
 export type PublicUser = { id: string; name: string; email: string };
 
-const EMPTY: UserData = { habits: [], goals: [], journal: [] };
+const STARTER_PLAN: ScheduledActivity[] = [
+  { id: "starter-water", time: "08:00", title: "Water and a gentle start", detail: "Have a glass of water and take a moment to get settled.", tag: "REMINDER", completedOn: null },
+  { id: "starter-stretch", time: "11:30", title: "Movement break", detail: "Take a short walk or stretch between study or work sessions.", tag: "MOVE", completedOn: null },
+  { id: "starter-lunch", time: "13:00", title: "Lunch away from your screen", detail: "Pause for a balanced meal and a proper break.", tag: "MEAL", completedOn: null },
+  { id: "starter-winddown", time: "20:30", title: "Wind-down moment", detail: "Take five quiet minutes to reset before the evening ends.", tag: "REST", completedOn: null },
+];
+
+const EMPTY: UserData = { habits: [], goals: [], journal: [], dailyPlan: STARTER_PLAN };
 
 function publicUser(user: User): PublicUser {
   return {
@@ -80,12 +96,10 @@ export function useSession(): Session {
 export function useUserData(userId: string) {
   const [data, setData] = useState<UserData>(EMPTY);
   const dataRef = useRef<UserData>(EMPTY);
-  const [ready, setReady] = useState(false);
+  const [loadedUserId, setLoadedUserId] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
-    setReady(false);
-
     const supabase = getSupabase();
 
     void (async () => {
@@ -107,11 +121,11 @@ export function useUserData(userId: string) {
 
         dataRef.current = loaded;
         setData(loaded);
-        setReady(true);
+        setLoadedUserId(userId);
       } catch (error: unknown) {
         if (alive) {
           console.error("Could not load wellness data:", error);
-          setReady(true);
+          setLoadedUserId(userId);
         }
       }
     })();
@@ -147,7 +161,7 @@ export function useUserData(userId: string) {
     [userId]
   );
 
-  return { data, update, ready };
+  return { data, update, ready: loadedUserId === userId };
 }
 
 export const newId = () => crypto.randomUUID();
@@ -175,8 +189,7 @@ export async function signUp(
     password,
     options: {
       data: { full_name: name },
-      emailRedirectTo:
-        "https://wellness-planner-tbfb-shahid4928abc-5426.vercel.app/login",
+      emailRedirectTo: `${window.location.origin}/login`,
     },
   });
 

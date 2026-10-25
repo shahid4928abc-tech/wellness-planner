@@ -8,6 +8,8 @@ import { logOut, useSession, useUserData, type PublicUser, type UserData } from 
 
 const nav = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/schedule", label: "Daily rhythm" },
+  { href: "/companion", label: "AI companion" },
   { href: "/habits", label: "Habits" },
   { href: "/goals", label: "Goals" },
   { href: "/journal", label: "Journal" },
@@ -16,7 +18,8 @@ const nav = [
 type Ctx = { user: PublicUser; data: UserData; update: (fn: (d: UserData) => UserData) => void };
 
 function Inner({ user, children }: { user: PublicUser; children: (c: Ctx) => ReactNode }) {
-  const { data, update } = useUserData(user.id);
+  const { data, update, ready } = useUserData(user.id);
+  if (!ready) return <div role="status" className="py-12 text-center text-muted">Loading your wellness data…</div>;
   return <>{children({ user, data, update })}</>;
 }
 
@@ -93,7 +96,7 @@ export function AppShell({
         <h1 className="font-display text-4xl font-semibold tracking-tight text-sage-900">{title}</h1>
         {subtitle && <p className="mt-2 text-lg text-muted">{subtitle}</p>}
         <div className="mt-8">
-          <Inner user={user}>{children}</Inner>
+          <Inner key={user.id} user={user}>{children}</Inner>
         </div>
       </main>
     </div>

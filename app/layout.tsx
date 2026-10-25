@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Fraunces, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const display = Fraunces({
-  variable: "--font-display",
+  variable: "--font-display-font",
   subsets: ["latin"],
   axes: ["opsz"],
 });
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     "Set wellness goals, shape daily routines, journal your mood and see your consistency grow. A calm planner for a balanced life.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>

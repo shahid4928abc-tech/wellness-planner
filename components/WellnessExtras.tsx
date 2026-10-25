@@ -2433,7 +2433,7 @@ export function WellnessExtras() {
               </div>
               <div className="aside-symbol">✳</div>
               <div className="aside-footer">
-                Today's progress: <strong>{progress}%</strong>
+                 Today&apos;s progress: <strong>{progress}%</strong>
                 <br />
                 No pressure. Just progress.
               </div>
@@ -2458,7 +2458,7 @@ export function WellnessExtras() {
             </h2>
 
             <p>
-              You don't need to have everything figured out. Pause for a moment,
+               You don&apos;t need to have everything figured out. Pause for a moment,
               notice how you feel, and meet yourself where you are.
             </p>
 
@@ -2502,12 +2502,12 @@ export function WellnessExtras() {
 
             <h3>A little space to let it out.</h3>
             <p>
-              What's on your mind today? Write a little, reflect, or just let
+               What&apos;s on your mind today? Write a little, reflect, or just let
               your thoughts land somewhere.
             </p>
 
             <label className="journal-label" htmlFor="daily-journal">
-              TODAY'S REFLECTION
+               TODAY&apos;S REFLECTION
             </label>
 
             <textarea
@@ -2545,7 +2545,7 @@ export function WellnessExtras() {
 
             <div className="journal-prompt">
               <span>✳ TRY THIS PROMPT</span>
-              <p>What's one thing I can do today to be kinder to myself?</p>
+               <p>What&apos;s one thing I can do today to be kinder to myself?</p>
             </div>
           </div>
         </div>
@@ -2614,7 +2614,7 @@ export function WellnessExtras() {
             </h2>
 
             <p>
-              A good week isn't about fitting more into every day. Choose what
+               A good week isn&apos;t about fitting more into every day. Choose what
               deserves your time and leave a little room for the unexpected.
             </p>
 

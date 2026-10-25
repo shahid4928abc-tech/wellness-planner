@@ -12,6 +12,7 @@ export function DashboardView() {
       {({ user, data }) => {
         const today = dayKey();
         const { habits, goals, journal } = data;
+        const dailyPlan = data.dailyPlan ?? [];
         const done = habits.filter((h) => h.log.includes(today)).length;
         const pct = habits.length ? Math.round((done / habits.length) * 100) : 0;
         const week = lastDays(7).map((d) => ({
@@ -104,6 +105,37 @@ export function DashboardView() {
                 ) : (
                   <p className="mt-3 text-muted">Nothing yet. <Link href="/journal" className="font-semibold text-sage-700 underline">Write your first entry</Link>.</p>
                 )}
+              </section>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <section className={card} aria-labelledby="schedule-preview">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h2 id="schedule-preview" className="font-display text-2xl font-semibold text-sage-900">Today&apos;s rhythm</h2>
+                    <p className="mt-1 text-sm text-muted">{dailyPlan.filter((activity) => activity.completedOn === today).length} of {dailyPlan.length} activities complete</p>
+                  </div>
+                  <Link href="/schedule" className="shrink-0 text-sm font-semibold text-sage-700 underline">Open schedule</Link>
+                </div>
+                {dailyPlan.length ? (
+                  <ul className="mt-4 space-y-2">
+                    {[...dailyPlan].sort((a, b) => a.time.localeCompare(b.time)).slice(0, 4).map((activity) => (
+                      <li key={activity.id} className="flex items-center gap-3 rounded-xl bg-cream px-3 py-2.5 text-sm">
+                        <span className="w-12 shrink-0 text-xs font-semibold text-muted">{activity.time}</span>
+                        <span className="min-w-0 flex-1 truncate font-medium">{activity.title}</span>
+                        <span className="text-xs text-sage-700">{activity.completedOn === today ? "Done" : "To do"}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : <p className="mt-4 text-sm text-muted">Your day is open. Add an activity to get started.</p>}
+              </section>
+
+              <section className={`${card} flex flex-col items-start justify-between gap-4`} aria-labelledby="companion-preview">
+                <div>
+                  <h2 id="companion-preview" className="font-display text-2xl font-semibold text-sage-900">Need a plan that fits?</h2>
+                  <p className="mt-2 max-w-md leading-7 text-muted">Tell the AI companion about your time, energy, or schedule. Add a helpful suggestion straight to your daily rhythm.</p>
+                </div>
+                <Link href="/companion" className="inline-flex items-center justify-center rounded-full bg-sage-700 px-5 py-3 font-semibold text-cream transition-colors hover:bg-sage-900">Talk to the AI companion</Link>
               </section>
             </div>
           </div>

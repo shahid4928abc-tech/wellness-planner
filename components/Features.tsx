@@ -7,6 +7,7 @@ const features = [
   { icon: icons.mood, title: "Mood & wellbeing journal", text: "Take a minute to note how you feel and notice what lifts you over time." },
   { icon: icons.chart, title: "Progress & insights", text: "See your consistency at a glance with clear weekly views that celebrate effort." },
   { icon: icons.leaf, title: "Healthy lifestyle planning", text: "Plan meals, movement, rest and downtime together so no part of your wellbeing is left out." },
+  { icon: icons.chat, title: "AI wellness companion", text: "Talk through your time and energy, then add a practical suggestion directly to your daily rhythm." },
 ];
 
 export function Features() {
