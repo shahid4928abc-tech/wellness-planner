@@ -43,7 +43,11 @@ export function useUserData(userId: string) {
     let alive = true;
     setReady(false);
     const supabase = getSupabase();
-    supabase.from("wellness_data").select("data").eq("user_id", userId).maybeSingle().then(({ data: row, error }) => {
+   
+Promise.resolve(
+  supabase.from("wellness_data").select("data").eq("user_id", userId).maybeSingle()
+).then(({ data: row, error }) => {
+
       if (!alive) return;
       if (error) console.error("Could not load wellness data:", error.message);
       const loaded = row?.data ? { ...EMPTY, ...row.data } as UserData : EMPTY;
