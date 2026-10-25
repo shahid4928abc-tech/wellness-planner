@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { Logo } from "@/components/Logo";
 import { logIn, signUp, useSession } from "@/lib/store";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase/client";
 import { btn, input } from "./AppShell";
 
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {
@@ -17,7 +17,9 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const isSignup = mode === "signup";
 
   useEffect(() => {
-    if (session.status === "in") router.replace("/dashboard");
+    if (session.status === "in") {
+      router.replace("/dashboard");
+    }
   }, [session.status, router]);
 
   async function handleGoogleLogin() {
@@ -25,7 +27,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error } = await getSupabase().auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/dashboard`,
@@ -36,38 +38,52 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         setError(error.message);
         setBusy(false);
       }
-    } catch {
-      setError("Unable to sign in with Google. Please try again.");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to sign in with Google. Please try again."
+      );
       setBusy(false);
     }
   }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     const f = new FormData(e.currentTarget);
     setBusy(true);
     setError(null);
 
-    const err = isSignup
-      ? await signUp(
-          String(f.get("name")),
-          String(f.get("email")),
-          String(f.get("password"))
-        )
-      : await logIn(
-          String(f.get("email")),
-          String(f.get("password"))
+    try {
+      const err = isSignup
+        ? await signUp(
+            String(f.get("name")),
+            String(f.get("email")),
+            String(f.get("password"))
+          )
+        : await logIn(
+            String(f.get("email")),
+            String(f.get("password"))
+          );
+
+      setBusy(false);
+
+      if (err) {
+        setError(err);
+      } else if (!isSignup) {
+        router.replace("/dashboard");
+      } else {
+        setError(
+          "Account created. If email confirmation is enabled in Supabase, check your inbox and confirm your email before logging in."
         );
-
-    setBusy(false);
-
-    if (err) {
-      setError(err);
-    } else if (!isSignup) {
-      router.replace("/dashboard");
-    } else {
+      }
+    } catch (err) {
+      setBusy(false);
       setError(
-        "Account created. If email confirmation is enabled in Supabase, check your inbox and confirm your email before logging in."
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again."
       );
     }
   }
