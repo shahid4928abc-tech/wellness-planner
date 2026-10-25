@@ -45,7 +45,6 @@ export function useSession(): Session {
     void (async () => {
       try {
         const { data, error } = await supabase.auth.getUser();
-
         if (!alive) return;
 
         setSession(
@@ -61,7 +60,6 @@ export function useSession(): Session {
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, authSession) => {
         if (!alive) return;
-
         setSession(
           authSession?.user
             ? { status: "in", user: publicUser(authSession.user) }
@@ -86,7 +84,6 @@ export function useUserData(userId: string) {
 
   useEffect(() => {
     let alive = true;
-
     setReady(false);
 
     const supabase = getSupabase();
@@ -100,7 +97,6 @@ export function useUserData(userId: string) {
           .maybeSingle();
 
         if (!alive) return;
-
         if (error) {
           console.error("Could not load wellness data:", error.message);
         }
@@ -128,7 +124,6 @@ export function useUserData(userId: string) {
   const update = useCallback(
     (fn: (current: UserData) => UserData) => {
       const next = fn(dataRef.current);
-
       dataRef.current = next;
       setData(next);
 
@@ -178,7 +173,11 @@ export async function signUp(
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: name } },
+    options: {
+      data: { full_name: name },
+      emailRedirectTo:
+        "https://wellness-planner-tbfb-shahid4928abc-5426.vercel.app/login",
+    },
   });
 
   if (error) return error.message;
