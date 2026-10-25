@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --cream: #f7f3ea;
+  --cream-deep: #efe8d8;
+  --paper: #fffdf8;
+  --sage-50: #eef3ee;
+  --sage-100: #dfe9e0;
+  --sage-300: #a9c0ae;
+  --sage-500: #6b9374;
+  --sage-700: #3f5f4a;
+  --sage-900: #1f3327;
+  --clay: #c47a58;
+  --clay-soft: #f2dccf;
+  --sand: #d9cdb0;
+  --ink: #1f2a24;
+  --muted: #56625a;
+}
+
+@theme inline {
+  --color-cream: var(--cream);
+  --color-cream-deep: var(--cream-deep);
+  --color-paper: var(--paper);
+  --color-sage-50: var(--sage-50);
+  --color-sage-100: var(--sage-100);
+  --color-sage-300: var(--sage-300);
+  --color-sage-500: var(--sage-500);
+  --color-sage-700: var(--sage-700);
+  --color-sage-900: var(--sage-900);
+  --color-clay: var(--clay);
+  --color-clay-soft: var(--clay-soft);
+  --color-sand: var(--sand);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-sans-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
+  --shadow-soft: 0 1px 2px rgb(31 51 39 / 0.04), 0 8px 24px -8px rgb(31 51 39 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(31 51 39 / 0.05), 0 24px 48px -16px rgb(31 51 39 / 0.22);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 3px solid var(--sage-700);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes grow-y {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@keyframes draw-ring {
+  from { stroke-dashoffset: var(--ring-len); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-rise { animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.animate-float { animation: float 6s ease-in-out infinite; }
+.bar { transform-origin: bottom; animation: grow-y 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.ring { animation: draw-ring 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-rise, .animate-float, .bar, .ring { animation: none !important; }
+}
